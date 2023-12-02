@@ -184,9 +184,9 @@
 | 100        | クラウドプラクティショナー |
 |            |                            |
 
-### Entity Attribute Value
+### 単一参照テーブル（One True Lookup Table）／EAV（Entity Attribute Value）
 
-データ型やサイズなどの制約チェックができないので、列持ち（横持ち）に直すか、テーブルを分割する。テーブルを分割する際に、都道府県マスタと市区町村マスタのように、ほぼ共通の列で一部だけ異なる列が含まれるような組み合わせの場合は、2テーブルではなく、継承元のテーブル1つ＋継承先のテーブル2つとすることも可能。
+データ型やサイズなどの制約チェックができないので、列持ちに直す（シングルテーブル継承）か、テーブルを分割する（具象テーブル継承）。テーブルを分割する際に、都道府県マスタと市区町村マスタのように、ほぼ共通の列で一部だけ異なる列が含まれるような組み合わせの場合は、2テーブルではなく、継承元のテーブル1つ＋継承先のテーブル2つとすることも可能（クラステーブル継承）。
 
 | マスタ種別 | 設定キー       | 設定値                        |
 | ---------- | -------------- | ----------------------------- |
@@ -233,6 +233,36 @@
 | 002        | 副社長 | 001            |
 | ...        |        |                |
 
+### ポリモーフィック関連
+
+子エンティティが、複数の親エンティティを参照するものをポリモーフィック関連と呼ぶ。
+テーブルのリレーションでは1つの親テーブルしか関連付けられないため、子テーブル側に、親テーブルの名称（またはコード）と親レコードのIDを格納する2列を持たせる。
+
+| post_id  | title                       | genre_id | content                                                   |
+| -------- | --------------------------- | -------- | --------------------------------------------------------- |
+| 00000001 | Lorem ipsum dolor sit amet  | 00001234 | Aenean imperdiet laoreet tincidunt.                       |
+| 00000002 | Consectetur adipiscing elit | 00002345 | Aliquam dignissim gravida est, quis auctor dui tempus eu. |
+|          |                             |          |                                                           |
+
+| news_id  | title                 | summary                                | content                                         |
+| -------- | --------------------- | -------------------------------------- | ----------------------------------------------- |
+| 00000001 | Curabitur in ornare   | Vestibulum pulvinar a nisi et aliquet. | Vestibulum convallis, dolor vel iaculis tempus. |
+| 00000002 | Nam lobortis sed orci | Justo ligula eleifend nulla.           | Sit amet varius urna odio vel mauris.           |
+|          |                       |                                        |                                                 |
+
+| comment_id | comment_type | id       | content                                       |
+| ---------- | ------------ | -------- | --------------------------------------------- |
+| 00000001   | Posts        | 00000001 | Justo ligula eleifend nulla.                  |
+| 00000002   | News         | 00000001 | Cras rutrum aliquet lectus id convallis.      |
+| 00000003   | News         | 00000002 | Fusce tortor orci, volutpat vel augue rutrum. |
+|            |              |          |                                               |
+
+ただし、外部キー制約を設定できないデメリットがあるため、以下の構造とすることも可能。
+
+- 親テーブル同士の共通テーブルを追加
+- 子テーブルを分割
+- 子テーブルの列を親テーブルに統合
+- 中間テーブルを追加
 
 ---
 

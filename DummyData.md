@@ -10,6 +10,8 @@
 
 # 電話番号
 
+- [電気通信番号指定状況](https://www.soumu.go.jp/main_sosiki/joho_tsusin/top/tel_number/number_shitei.html)
+
 ## 固定電話
 
 ## 携帯電話
